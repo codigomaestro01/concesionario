@@ -17,6 +17,9 @@ export class Car {
   @Column({ type: 'int4', nullable: false })
   year: number;
 
+  @Column({ type: 'int4', default: 0 })
+  stock: number;
+
   @Column({ type: 'int4' })
   price: number;
 
