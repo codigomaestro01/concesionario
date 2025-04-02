@@ -1,18 +1,28 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CarsService } from '../services/cars.service';
 import { CreateCarDto } from '../dto/car.dto';
 
 @Controller('cars')
 export class CarsController {
-  constructor(private readonly CarsService: CarsService) {}
+  constructor(private readonly carsService: CarsService) {}
 
   @Get()
-  getCarsAll() {
-    return 'Todos los Carros';
+  getFindAll() {
+    return this.carsService.findAll();
   }
 
   @Post()
   createCar(@Body() createCarDto: CreateCarDto) {
-    return this.CarsService.create(createCarDto);
+    return this.carsService.create(createCarDto);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.carsService.findOne(id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.carsService.remove(id);
   }
 }
