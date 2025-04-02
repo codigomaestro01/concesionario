@@ -40,6 +40,6 @@
   "eslint.codeActionsOnSave.rules": null, // Desactiva reglas obsoletas
   "eslint.format.enable": false, // Deja que Prettier maneje el formato
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true // Corrige solo errores (no formato)
+    "source.fixAll.eslint": "explicit"
   }
 }
