@@ -6,6 +6,7 @@ import { CarsService } from './modules/cars/services/cars.service';
 import { CarsModule } from './modules/cars/cars.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -22,6 +23,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true, //Si se establece en true, TypeORM cargará automáticamente todas las entidades que estén registradas en los módulos de la aplicación.
       synchronize: true, //Si se establece en true, TypeORM sincronizará automáticamente la estructura de la base de datos con las entidades definidas en el código cada vez que se inicie la aplicación.
     }),
+
+    CommonModule,
   ],
   controllers: [AppController, CarsController],
   providers: [AppService, CarsService],
