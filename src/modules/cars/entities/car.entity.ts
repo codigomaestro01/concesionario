@@ -3,17 +3,20 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Brand } from '../../brands/entities/brand.entity';
 
 @Entity()
 export class Car {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  brand: string;
+  @Column({ type: 'int4', nullable: false })
+  brand_id: number;
 
   @Column({ type: 'varchar', length: 50 })
   model: string;
@@ -32,6 +35,10 @@ export class Car {
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
+
+  @ManyToOne(() => Brand)
+  @JoinColumn({ name: 'brand_id', referencedColumnName: 'id' })
+  brand: Brand;
 
   @CreateDateColumn({
     type: 'timestamp',
