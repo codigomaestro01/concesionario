@@ -5,11 +5,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateCarDto, UpdateCarDto } from '../dto/car.dto';
+import { CreateCarDto, FilterCarDto, UpdateCarDto } from '../dto/car.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Car } from '../entities/car.entity';
-import { Repository } from 'typeorm';
-import { PaginationDto } from '../../../common/dtos/pagination.dto';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { Brand } from '../../brands/entities/brand.entity';
 
 @Injectable()
 export class CarsService {
@@ -18,13 +18,34 @@ export class CarsService {
   constructor(
     @InjectRepository(Car)
     private readonly carRepository: Repository<Car>,
+    @InjectRepository(Brand)
+    private readonly brandRepository: Repository<Brand>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
+  // findAll(paginationDto: PaginationDto) {
+  //   const { limit = 3, offset = 0 } = paginationDto;
+  //   return this.carRepository.find({
+  //     take: limit,
+  //     skip: offset,
+  //   });
+  // }
+
+  findAll(params?: FilterCarDto) {
+    const { limit, offset, description } = params || {};
+    const where: FindOptionsWhere<Car> = {};
+
+    if (description) {
+      where.description = ILike(`%${description}%`);
+    }
+
     return this.carRepository.find({
+      order: { id: 'ASC' },
+      where,
       take: limit,
       skip: offset,
+      relations: {
+        brand: true,
+      },
     });
   }
 
@@ -41,7 +62,11 @@ export class CarsService {
   }
 
   async findOne(id: number) {
-    const car = await this.carRepository.findOneBy({ id });
+    const car = await this.carRepository.findOne({
+      where: { id: id },
+      relations: { brand: true },
+    });
+
     if (!car) {
       throw new NotFoundException(
         `Carro con id ${id} no encontrado en la base de datos`,
@@ -50,24 +75,35 @@ export class CarsService {
     return car;
   }
 
-  async update(id: number, updateCarDto: UpdateCarDto) {
-    const car = await this.carRepository.findOne({ where: { id } });
+  async update(id: number, changes: UpdateCarDto) {
+    const car = await this.carRepository.findOne({
+      where: { id },
+      relations: { brand: true },
+    });
 
     if (!car) {
-      throw new NotFoundException(`Carro con id ${id} no encontrado`);
+      throw new NotFoundException(`Car with id ${id} not found`);
     }
 
-    try {
-      this.carRepository.merge(car, updateCarDto);
-      await this.carRepository.save(car);
-
-      return {
-        message: 'Registro actualizado  con éxito',
-        data: car,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (changes.brand_id) {
+      const brand = await this.brandRepository.findOneBy({
+        id: changes.brand_id,
+      });
+      if (!brand) {
+        throw new NotFoundException(
+          `Brand with id ${changes.brand_id} not found`,
+        );
+      }
+      car.brand = brand;
     }
+
+    this.carRepository.merge(car, changes);
+    const updated = await this.carRepository.save(car);
+
+    return {
+      message: 'Registro actualizado correctamente',
+      data: updated,
+    };
   }
 
   // async remove(id: number) {
