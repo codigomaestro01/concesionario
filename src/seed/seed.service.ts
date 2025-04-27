@@ -2,14 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CarsService } from '../modules/cars/services/cars.service';
 import { initialData } from './data/seed-data';
 import { Car } from '../modules/cars/entities/car.entity';
+import { Brand } from '../modules/brands/entities/brand.entity';
+import { BrandsService } from '../modules/brands/services/brands.service';
 
 @Injectable()
 export class SeedService {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(
+    private readonly carsService: CarsService,
+    private readonly brandsService: BrandsService,
+  ) {}
 
   async runSeed() {
     await this.insertNewCars();
-    return 'SEED EXECUTED';
+    return 'SEED EXECUTED CARS';
+  }
+  async runSeedBrands() {
+    await this.insertNewBrands();
+    return 'SEED EXECUTED BRANDS';
   }
 
   private async insertNewCars() {
@@ -20,6 +29,21 @@ export class SeedService {
 
     cars.forEach((car) => {
       insertPromises.push(this.carsService.create(car));
+    });
+
+    await Promise.all(insertPromises);
+
+    return true;
+  }
+
+  private async insertNewBrands() {
+    await this.brandsService.deleteAllBrands();
+
+    const brands = initialData.brands;
+    const insertPromises: Promise<Brand | undefined>[] = [];
+
+    brands.forEach((brand) => {
+      insertPromises.push(this.brandsService.create(brand));
     });
 
     await Promise.all(insertPromises);

@@ -11,9 +11,50 @@ interface SeedCar {
   deletedAt?: Date;
 }
 
+interface SeedBrand {
+  name: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
 interface SeedData {
   cars: SeedCar[];
+  brands: SeedBrand[];
 }
+// interface SeedDataBrand {
+//   brands: SeedBrand[];
+// }
+
+// export const initialDataBrand: SeedDataBrand = {
+//   brands: [
+//     {
+//       name: 'Tesla',
+//       description: 'Vehículos eléctricos con diseño y tecnología avanzada.',
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       name: 'Ford',
+//       description: 'Marca icónica con enfoque en innovación y electrificación.',
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       name: 'Volkswagen',
+//       description: 'Ingeniería alemana con visión sostenible y moderna.',
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//     {
+//       name: 'Rivian',
+//       description: 'SUVs y camionetas eléctricas pensadas para la aventura.',
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//   ],
+// };
 
 export const initialData: SeedData = {
   cars: [
@@ -70,6 +111,32 @@ export const initialData: SeedData = {
       isAvailable: true,
       brand_id: 4,
       description: 'Built for rugged terrain, the Rivian R1T Adventure.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ],
+  brands: [
+    {
+      name: 'Tesla',
+      description: 'Vehículos eléctricos con diseño y tecnología avanzada.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      name: 'Ford',
+      description: 'Marca icónica con enfoque en innovación y electrificación.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      name: 'Volkswagen',
+      description: 'Ingeniería alemana con visión sostenible y moderna.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      name: 'Rivian',
+      description: 'SUVs y camionetas eléctricas pensadas para la aventura.',
       createdAt: new Date(),
       updatedAt: new Date(),
     },

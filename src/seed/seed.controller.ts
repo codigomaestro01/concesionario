@@ -9,4 +9,9 @@ export class SeedController {
   executeSeed() {
     return this.seedService.runSeed();
   }
+
+  @Get('brand')
+  executeSeedBrands() {
+    return this.seedService.runSeedBrands();
+  }
 }
