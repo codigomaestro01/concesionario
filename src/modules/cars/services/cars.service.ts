@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Car } from '../entities/car.entity';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { Brand } from '../../brands/entities/brand.entity';
+import { User } from '../../../auth/entities/user.entity';
 
 @Injectable()
 export class CarsService {
@@ -49,9 +50,9 @@ export class CarsService {
     });
   }
 
-  async create(createCarDto: CreateCarDto) {
+  async create(createCarDto: CreateCarDto, user: User) {
     try {
-      const car = this.carRepository.create(createCarDto);
+      const car = this.carRepository.create({ ...createCarDto, user });
       await this.carRepository.save(car);
       return car;
     } catch (error) {
@@ -75,10 +76,10 @@ export class CarsService {
     return car;
   }
 
-  async update(id: number, changes: UpdateCarDto) {
+  async update(id: number, changes: UpdateCarDto, user: User) {
     const car = await this.carRepository.findOne({
       where: { id },
-      relations: { brand: true },
+      relations: { brand: true, user: true },
     });
 
     if (!car) {
@@ -97,7 +98,12 @@ export class CarsService {
       car.brand = brand;
     }
 
+    if (user) {
+      car.user = user;
+    }
+
     this.carRepository.merge(car, changes);
+
     const updated = await this.carRepository.save(car);
 
     return {
