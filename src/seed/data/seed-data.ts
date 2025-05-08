@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 interface SeedCar {
   model: string;
   year: number;
@@ -19,44 +20,41 @@ interface SeedBrand {
   deletedAt?: Date;
 }
 
+interface SeedUser {
+  email: string;
+  fullName: string;
+  password: string;
+  roles: string[];
+}
+
 interface SeedData {
+  users: SeedUser[];
   cars: SeedCar[];
   brands: SeedBrand[];
 }
-// interface SeedDataBrand {
-//   brands: SeedBrand[];
-// }
-
-// export const initialDataBrand: SeedDataBrand = {
-//   brands: [
-//     {
-//       name: 'Tesla',
-//       description: 'Vehículos eléctricos con diseño y tecnología avanzada.',
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       name: 'Ford',
-//       description: 'Marca icónica con enfoque en innovación y electrificación.',
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       name: 'Volkswagen',
-//       description: 'Ingeniería alemana con visión sostenible y moderna.',
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//     {
-//       name: 'Rivian',
-//       description: 'SUVs y camionetas eléctricas pensadas para la aventura.',
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     },
-//   ],
-// };
 
 export const initialData: SeedData = {
+  users: [
+    {
+      email: 'test1@google.com',
+      fullName: 'Test One',
+      password: bcrypt.hashSync('Abc123', 10),
+      roles: ['admin'],
+    },
+    {
+      email: 'test2@google.com',
+      fullName: 'Test Two',
+      password: bcrypt.hashSync('Abc123', 10),
+      roles: ['user', 'super-user'],
+    },
+    {
+      email: 'gabrielgriffin@gmail.com',
+      fullName: 'Gabriel Griffin',
+      password: bcrypt.hashSync('Abc123', 10),
+      roles: ['admin', 'super-user'],
+    },
+  ],
+
   cars: [
     {
       model: 'Model S Plaid',

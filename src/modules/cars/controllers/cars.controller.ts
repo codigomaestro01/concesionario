@@ -11,6 +11,9 @@ import {
 } from '@nestjs/common';
 import { CarsService } from '../services/cars.service';
 import { CreateCarDto, UpdateCarDto, FilterCarDto } from '../dto/car.dto';
+import { Auth, GetUser } from '../../../auth/decorators';
+import { ValidRoles } from '../../../auth/interfaces';
+import { User } from '../../../auth/entities/user.entity';
 
 @Controller('cars')
 export class CarsController {
@@ -28,8 +31,9 @@ export class CarsController {
   }
 
   @Post()
-  async create(@Body() createCarDto: CreateCarDto) {
-    const nuevo = await this.carsService.create(createCarDto);
+  @Auth(ValidRoles.admin)
+  async create(@Body() createCarDto: CreateCarDto, @GetUser() user: User) {
+    const nuevo = await this.carsService.create(createCarDto, user);
     const data = {
       data: nuevo,
       message: 'Registro creado correctamente',
@@ -47,8 +51,13 @@ export class CarsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateCarDto: UpdateCarDto) {
-    const datos = await this.carsService.update(id, updateCarDto);
+  @Auth(ValidRoles.admin)
+  async update(
+    @Param('id') id: number,
+    @Body() updateCarDto: UpdateCarDto,
+    @GetUser() user: User,
+  ) {
+    const datos = await this.carsService.update(id, updateCarDto, user);
     const data = {
       data: datos,
       message: 'Registro actualizado correctamente',
@@ -57,6 +66,7 @@ export class CarsController {
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.admin)
   async remove(@Param('id') id: number) {
     const dato = await this.carsService.remove(id);
     const data = {
